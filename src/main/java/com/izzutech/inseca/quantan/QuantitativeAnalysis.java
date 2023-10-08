@@ -2,9 +2,11 @@ package com.izzutech.inseca.quantan;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 import com.izzutech.inseca.dto.MapModeltoDTO;
 import com.izzutech.inseca.dto.QuantitativeDataDTO;
+import com.izzutech.inseca.model.BalanceSheetModel;
 import com.izzutech.inseca.model.CompanyOverviewModel;
 import com.izzutech.inseca.model.QuantitativeDataModel;
 import com.izzutech.inseca.service.AlphavantageAPI;
@@ -38,8 +40,11 @@ public class QuantitativeAnalysis {
 				isUndervalued = true;
 			}
 			
+			List<BalanceSheetModel> balanceSheetModels = AlphavantageAPI.getBalanceSheets(ticker);
+			BalanceSheetModel latestBalanceSheet = balanceSheetModels.get(0);
+			
 			//todo: isPassiveInvestment, isActiveInvestment
-
+//			passive_investment(ticker, totalAssets, totalLiabilities, peRatio, marketCap, annualEarnings)
 			
 			quantitativeDataModel.setPrice(price);
 			quantitativeDataModel.setPeRatio(companyOverview.getpERatio());
@@ -54,6 +59,28 @@ public class QuantitativeAnalysis {
 			e.printStackTrace();
 		}
 		return quantitativeDataModel;		
+	}
+	
+	public boolean isPassiveInvestment(String ticker, BigDecimal totalAssets, BigDecimal totalLiabilities, BigDecimal peRatio, BigDecimal marketCap, BigDecimal annualEarnings) {
+		
+//        - conservatively financed ((assets/liabilities) > 200%)
+//        - dividend paid for at least past 20 years
+//        - no earnings deficit for last 10 years
+//        - earnings growth at least 20% for last 10 years or 2.9% annually
+//        - cheap assets (market cap < (assets - liabilities )*1.5)
+//        - cheap earnings (p/e ratio < 50)
+		
+		boolean isPassiveInvestment = false;
+		
+		boolean isConservativelyFinanced = false;
+		BigDecimal alRatio = totalAssets.divide(totalLiabilities).multiply(new BigDecimal(100));
+		if(alRatio.compareTo(new BigDecimal(200)) > 0) {
+			isConservativelyFinanced = true;
+		}
+		
+		//todo: get dividend history
+		
+		return isPassiveInvestment;
 	}
 	
 	

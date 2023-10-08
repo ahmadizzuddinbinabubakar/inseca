@@ -12,7 +12,12 @@ public class DataTypeConverterUtil {
 		SimpleDateFormat formatter = new SimpleDateFormat(dateFormat, Locale.ENGLISH);
 		Date date = null;
 		try {
-			date = formatter.parse(dateString);
+			if(!dateString.isEmpty() && !dateString.equalsIgnoreCase("None")) {
+				date = formatter.parse(dateString);
+			} else {
+				date = null;
+			}
+			
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -21,7 +26,7 @@ public class DataTypeConverterUtil {
 	}
 	
 	public static BigDecimal stringToBigDecimal(String bigDecimalString) {
-		if(bigDecimalString != null) {
+		if(bigDecimalString != null && !bigDecimalString.equalsIgnoreCase("None")) {
 			return new BigDecimal(bigDecimalString);
 		} else {
 			return BigDecimal.ZERO;

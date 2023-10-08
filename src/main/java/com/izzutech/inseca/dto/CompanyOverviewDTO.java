@@ -1,4 +1,4 @@
-package com.izzutech.inseca.service.dto;
+package com.izzutech.inseca.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
